@@ -11,12 +11,12 @@ let state = {
   theme: 'dark'
 };
 
-// Initialize App (Fail-safe initialization regardless of document loading state)
+// Initialize App (Fail-safe initialization order: load data FIRST, then check auth & render)
 function initApp() {
-  checkAuth();
   loadState();
   initTheme();
   initAutoSave();
+  checkAuth();
 }
 
 if (document.readyState === 'loading') {
@@ -459,18 +459,53 @@ function openProjectModal(projId = null) {
   modal.classList.add('active');
 }
 
+function openProjectModal(id = null) {
+  const modal = document.getElementById('project-modal');
+  const title = document.getElementById('project-modal-title');
+  const idInput = document.getElementById('project-id-input');
+  const nameInput = document.getElementById('project-name-input');
+  const codeInput = document.getElementById('project-code-input');
+  const descInput = document.getElementById('project-desc-input');
+
+  if (id) {
+    const proj = state.projects.find(p => p.id === id);
+    if (proj) {
+      if (title) title.textContent = 'Редактиране на Проект';
+      if (idInput) idInput.value = proj.id;
+      if (nameInput) nameInput.value = proj.name;
+      if (codeInput) codeInput.value = proj.code;
+      if (descInput) descInput.value = proj.description || '';
+    }
+  } else {
+    if (title) title.textContent = 'Нов Проект';
+    if (idInput) idInput.value = '';
+    if (nameInput) nameInput.value = '';
+    if (codeInput) codeInput.value = '';
+    if (descInput) descInput.value = '';
+  }
+
+  if (modal) modal.classList.add('active');
+  if (nameInput) setTimeout(() => nameInput.focus(), 100);
+}
+
 function closeProjectModal() {
-  document.getElementById('project-modal').classList.remove('active');
+  const modal = document.getElementById('project-modal');
+  if (modal) modal.classList.remove('active');
 }
 
 function saveProjectForm(e) {
-  e.preventDefault();
-  const id = document.getElementById('project-id-input').value;
-  const name = document.getElementById('proj-name-input').value.trim();
-  const code = document.getElementById('proj-code-input').value.trim();
-  const description = document.getElementById('proj-desc-input').value.trim();
+  if (e) e.preventDefault();
+  const idInput = document.getElementById('project-id-input');
+  const nameInput = document.getElementById('project-name-input');
+  const codeInput = document.getElementById('project-code-input');
+  const descInput = document.getElementById('project-desc-input');
 
-  if (!name) return alert('Моля въведете име на проекта.');
+  const id = idInput ? idInput.value : '';
+  const name = nameInput ? nameInput.value.trim() : '';
+  const code = codeInput ? codeInput.value.trim() : '';
+  const description = descInput ? descInput.value.trim() : '';
+
+  if (!name) return alert('Моля, въведете име на проекта.');
 
   if (id) {
     const proj = state.projects.find(p => p.id === id);
@@ -495,6 +530,25 @@ function saveProjectForm(e) {
   saveState();
   closeProjectModal();
   renderApp();
+}
+
+function deleteProject(projId) {
+  const proj = state.projects.find(p => p.id === projId);
+  const projName = proj ? proj.name : 'този проект';
+
+  showConfirmModal(
+    'Изтриване на Проект',
+    `Сигурни ли сте, че искате да изтриете проект <strong>"${escapeHtml(projName)}"</strong> и всички негови марки/дизайни?`,
+    () => {
+      state.projects = state.projects.filter(p => p.id !== projId);
+      if (state.selectedProjectId === projId) {
+        state.selectedProjectId = null;
+        closeProjectHubModal();
+      }
+      saveState();
+      renderApp();
+    }
+  );
 }
 
 let onConfirmCallback = null;
