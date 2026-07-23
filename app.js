@@ -18,6 +18,19 @@ function initApp() {
   initTheme();
   initAutoSave();
   checkAuth();
+  initSearchInput();
+}
+
+function initSearchInput() {
+  const input = document.getElementById('global-search-input');
+  if (input) {
+    input.addEventListener('input', (e) => {
+      handleSearch(e);
+    });
+    input.addEventListener('keyup', (e) => {
+      handleSearch(e);
+    });
+  }
 }
 
 if (document.readyState === 'loading') {
@@ -174,13 +187,16 @@ function updateStats() {
     });
   });
 
-  const query = state.searchQuery ? state.searchQuery.toLowerCase().trim() : '';
+  const searchInput = document.getElementById('global-search-input');
+  const query = (searchInput ? searchInput.value : state.searchQuery).toLowerCase().trim();
   let visibleCount = totalProjects;
   if (query) {
     visibleCount = state.projects.filter(proj => {
       const nameMatch = (proj.name || '').toLowerCase().includes(query);
       const codeMatch = (proj.code || '').toLowerCase().includes(query);
-      return nameMatch || codeMatch;
+      const descMatch = (proj.description || '').toLowerCase().includes(query);
+      const itemMatch = (proj.items || []).some(item => (item.name || '').toLowerCase().includes(query));
+      return nameMatch || codeMatch || descMatch || itemMatch;
     }).length;
   }
 
@@ -194,9 +210,10 @@ function updateStats() {
   document.getElementById('stat-total-count').textContent = totalTM + totalDS;
 }
 
-// Search Handlers & Variant A Strict Filtering (By Project Name & Code)
+// Search Handlers & Variant A Strict Filtering
 function handleSearch(e) {
-  state.searchQuery = e && e.target ? e.target.value : (e || '');
+  const searchInput = document.getElementById('global-search-input');
+  state.searchQuery = searchInput ? searchInput.value : (e && e.target ? e.target.value : (e || ''));
   const clearBtn = document.getElementById('clear-search-btn');
   if (clearBtn) {
     clearBtn.style.display = state.searchQuery.trim() ? 'flex' : 'none';
@@ -218,7 +235,8 @@ function renderProjectsList() {
   const container = document.getElementById('projects-grid');
   if (!container) return;
 
-  const query = state.searchQuery.toLowerCase().trim();
+  const searchInput = document.getElementById('global-search-input');
+  const query = (searchInput ? searchInput.value : state.searchQuery).toLowerCase().trim();
   const mode = state.viewMode || 'grid';
 
   // Toggle active button states
@@ -227,12 +245,14 @@ function renderProjectsList() {
   if (gridBtn) gridBtn.classList.toggle('active', mode === 'grid');
   if (listBtn) listBtn.classList.toggle('active', mode === 'list');
 
-  // Variant A: Strict filtering by Project Name and Code ONLY
+  // Filter projects by Project Name, Code, Description, or Item Name
   const filteredProjects = state.projects.filter(proj => {
     if (!query) return true;
     const nameMatch = (proj.name || '').toLowerCase().includes(query);
     const codeMatch = (proj.code || '').toLowerCase().includes(query);
-    return nameMatch || codeMatch;
+    const descMatch = (proj.description || '').toLowerCase().includes(query);
+    const itemMatch = (proj.items || []).some(item => (item.name || '').toLowerCase().includes(query));
+    return nameMatch || codeMatch || descMatch || itemMatch;
   });
 
   if (filteredProjects.length === 0) {
