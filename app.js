@@ -886,26 +886,20 @@ function checkAuth() {
   const overlay = document.getElementById('auth-overlay');
   const logoutBtn = document.getElementById('logout-btn');
 
-  // Remove the early-guard style injected by the inline script in <head>
-  const earlyGuard = document.getElementById('auth-early-guard');
-  if (earlyGuard) earlyGuard.remove();
-
   if (isAuth) {
+    // Authenticated: hide overlay and unlock content
     if (overlay) overlay.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = 'inline-flex';
     document.body.classList.remove('auth-locked');
-    // Make sure body content is visible
-    document.body.style.visibility = '';
   } else {
+    // Not authenticated: show overlay and lock content
     if (overlay) overlay.style.display = 'flex';
     if (logoutBtn) logoutBtn.style.display = 'none';
     document.body.classList.add('auth-locked');
-    // Remove visibility:hidden guard since the overlay is now showing
-    document.body.style.visibility = '';
     setTimeout(() => {
       const pwInput = document.getElementById('auth-password-input');
       if (pwInput) pwInput.focus();
-    }, 100);
+    }, 150);
   }
 }
 

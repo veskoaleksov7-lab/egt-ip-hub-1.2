@@ -6,18 +6,8 @@
   <title>EGT IP Hub 1.2 - Проекти, Търговски Марки & Дизайни</title>
   <meta name="description" content="Централизирана система за управление на проекти, търговски марки и промишлени дизайни на Euro Games Technology.">
   <link rel="stylesheet" href="styles.css">
-  <script>
-    // Early auth guard — runs immediately before DOM renders anything
-    // Hides body until checkAuth() decides to show it
-    (function() {
-      var isAuth = sessionStorage.getItem('egt_authenticated') === 'true';
-      if (!isAuth) {
-        document.write('<style id="auth-early-guard">body > *:not(#auth-overlay) { visibility: hidden !important; }</style>');
-      }
-    })();
-  </script>
 </head>
-<body>
+<body class="auth-locked">
 
   <!-- App Header -->
   <header class="app-header">
@@ -303,7 +293,7 @@
   </div>
 
   <!-- Password Protection / Authentication Overlay -->
-  <div id="auth-overlay" class="auth-overlay" style="display:none;">
+  <div id="auth-overlay" class="auth-overlay">
     <div class="auth-card">
       <div class="auth-header">
         <img src="images/egt_logo.png" alt="EGT Logo" class="auth-logo-img">
