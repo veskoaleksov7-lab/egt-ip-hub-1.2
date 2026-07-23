@@ -165,6 +165,12 @@ function updateStats() {
   document.getElementById('stat-total-count').textContent = totalTM + totalDS;
 }
 
+// Search Input Handler
+function handleSearch(e) {
+  state.searchQuery = e && e.target ? e.target.value : (e || '');
+  renderProjectsList();
+}
+
 // Projects View
 function renderProjectsList() {
   const container = document.getElementById('projects-grid');
@@ -173,20 +179,32 @@ function renderProjectsList() {
   const query = state.searchQuery.toLowerCase().trim();
 
   const filteredProjects = state.projects.filter(proj => {
+    if (!query) return true;
+
     const matchesName = proj.name.toLowerCase().includes(query) || 
                         proj.code.toLowerCase().includes(query) ||
                         (proj.description && proj.description.toLowerCase().includes(query));
 
     const matchesItem = (proj.items || []).some(item => {
-      const matchText = (item.name + " " + item.territory + " " + item.intTerritory + " " + (item.notes || "") + " " + (item.nationalLink || "") + " " + (item.intLink || "")).toLowerCase();
-      const typeMatch = state.activeFilterType === 'all' || item.type === state.activeFilterType;
-      const territoryMatch = state.activeTerritory === 'all' || 
-                             item.territory === state.activeTerritory || 
-                             item.intTerritory === state.activeTerritory;
-      return matchText.includes(query) && typeMatch && territoryMatch;
+      const fullText = (
+        (item.name || "") + " " + 
+        (item.territory || "") + " " + 
+        (item.intTerritory || "") + " " + 
+        (item.appDate || "") + " " + 
+        (item.regDate || "") + " " + 
+        (item.intAppDate || "") + " " + 
+        (item.intRegDate || "") + " " + 
+        (item.status || "") + " " + 
+        (item.intStatus || "") + " " + 
+        (item.notes || "") + " " + 
+        (item.nationalLink || "") + " " + 
+        (item.intLink || "") + " " + 
+        (item.link || "")
+      ).toLowerCase();
+      
+      return fullText.includes(query);
     });
 
-    if (query === '' && state.activeFilterType === 'all' && state.activeTerritory === 'all') return true;
     return matchesName || matchesItem;
   });
 
