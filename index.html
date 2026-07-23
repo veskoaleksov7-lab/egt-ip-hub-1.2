@@ -7,293 +7,10 @@
   <meta name="description" content="Централизирана система за управление на проекти, търговски марки и промишлени дизайни на Euro Games Technology.">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="auth-locked">
+<body>
 
-  <!-- App Header -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="brand-section">
-        <img src="images/egt_logo.png" alt="EGT Logo" class="egt-logo-img">
-        <div class="brand-title">
-          <h1>
-            Euro Games Technology 
-            <span class="tag-badge">IP PORTAL 1.2</span>
-          </h1>
-          <div class="brand-subtitle">Система за проекти, марки, дизайни & документация</div>
-        </div>
-      </div>
-
-      <div class="stats-pill">
-        <div>Проекти: <strong id="stat-projects-count">0</strong></div>
-        <div style="opacity:0.3">|</div>
-        <div>Марки: <strong id="stat-tm-count">0</strong></div>
-        <div style="opacity:0.3">|</div>
-        <div>Дизайни: <strong id="stat-ds-count">0</strong></div>
-        <div style="opacity:0.3">|</div>
-        <div>Общо: <strong id="stat-total-count">0</strong></div>
-      </div>
-
-      <div class="header-actions">
-        <button class="btn btn-primary" onclick="openProjectModal()">
-          <span>➕ Нов Проект</span>
-        </button>
-
-        <button class="btn-icon" id="theme-toggle-btn" onclick="toggleTheme()" title="Превключи режим (Тъмен/Светъл)">
-          🌙
-        </button>
-
-        <button class="btn btn-secondary" onclick="logoutApp()" title="Заключи системата (Изход)" id="logout-btn" style="display:none; margin-left: 4px;">
-          <span>🔒 Изход</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="main-container">
-
-    <!-- Search Bar -->
-    <div class="controls-bar">
-      <div class="search-box" style="flex: 1;">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="main-search-input" placeholder="Търсене по проект, марка, дизайн, BPO, TMview или бележки..." oninput="handleSearch(this.value)">
-      </div>
-    </div>
-
-    <!-- Section Title -->
-    <div class="section-header">
-      <h2 class="section-title">Каталог Проекти, Марки & Дизайни</h2>
-    </div>
-
-    <!-- Projects Grid Container -->
-    <div class="projects-grid" id="projects-grid">
-      <!-- Projects will be rendered dynamically here -->
-    </div>
-
-  </main>
-
-  <!-- Modal: Project Hub Overlay (Trademarks & Designs Popup) -->
-  <div class="modal-overlay" id="project-hub-modal" onclick="handleBackdropClick(event, 'project-hub-modal')">
-    <div class="modal-container" style="max-width: 1240px; width: 95vw; max-height: 92vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
-      <div class="modal-header" style="padding: 1.25rem 1.75rem; border-bottom: 1px solid var(--border-color); background: var(--bg-card);">
-        <div>
-          <div style="font-size: 0.75rem; color: var(--egt-red); font-weight: 700; letter-spacing: 0.5px;">ПРОЕКТЕН ХЪБ — МАРКИ & ДИЗАЙНИ</div>
-          <h3 class="modal-title" id="hub-modal-title" style="font-size: 1.4rem; margin-top: 2px; color: var(--text-primary);"></h3>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <button class="btn btn-primary" id="hub-modal-add-btn">
-            <span>➕ Добави Марка / Дизайн</span>
-          </button>
-          <button class="btn btn-secondary" id="hub-modal-edit-btn">
-            <span>✏️ Редактирай</span>
-          </button>
-          <button class="btn-icon" onclick="closeProjectHubModal()" title="Затвори (Esc)">✕</button>
-        </div>
-      </div>
-      <div class="modal-body" id="hub-modal-body" style="padding: 1.5rem; overflow-y: auto; flex: 1;">
-        <!-- Dynamically rendered items table -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Project Create/Edit -->
-  <div class="modal-overlay" id="project-modal">
-    <div class="modal-container" style="max-width: 600px;">
-      <div class="modal-header">
-        <h3 class="modal-title" id="project-modal-title">Нов Проект</h3>
-        <button class="btn-icon" onclick="closeProjectModal()">✕</button>
-      </div>
-      <form id="project-form" onsubmit="saveProjectForm(event)">
-        <div class="modal-body">
-          <input type="hidden" id="project-id-input">
-          
-          <div class="form-group full-width" style="margin-bottom: 1rem;">
-            <label for="proj-name-input">Име на проекта *</label>
-            <input type="text" class="form-control" id="proj-name-input" placeholder="Напр. crazy Bugs, Oil Company II..." required>
-          </div>
-
-          <div class="form-group full-width" style="margin-bottom: 1rem;">
-            <label for="proj-code-input">Код на проекта</label>
-            <input type="text" class="form-control" id="proj-code-input" placeholder="PRJ-001">
-          </div>
-
-          <div class="form-group full-width">
-            <label for="proj-desc-input">Описание & Допълнителна инфо</label>
-            <textarea class="form-control" id="proj-desc-input" placeholder="Кратко описание на съдържанието на проекта..."></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Отказ</button>
-          <button type="submit" class="btn btn-primary">Запази Проект</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal: Item Create/Edit (Trademark / Design) -->
-  <div class="modal-overlay" id="item-modal">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h3 class="modal-title" id="item-modal-title">Добави Търговска Марка / Дизайн</h3>
-        <button class="btn-icon" onclick="closeItemModal()">✕</button>
-      </div>
-      <form id="item-form" onsubmit="saveItemForm(event)">
-        <div class="modal-body">
-          <input type="hidden" id="item-proj-id-input">
-          <input type="hidden" id="item-id-input">
-
-          <div class="form-grid">
-            
-            <div class="form-group">
-              <label for="item-name-input">ИМЕ НА МАРКАТА / ДИЗАЙНА *</label>
-              <input type="text" class="form-control" id="item-name-input" placeholder="Напр. crazy Bugs" required>
-            </div>
-
-            <div class="form-group">
-              <label for="item-type-select">ТИП (Марка / Дизайн)</label>
-              <select class="form-control" id="item-type-select">
-                <option value="trademark">Търговска Марка (Trademark)</option>
-                <option value="design">Промишлен Дизайн (Industrial Design)</option>
-              </select>
-            </div>
-
-            <!-- Image Upload Zone -->
-            <div class="form-group full-width">
-              <label>ГРАФИЧНО ИЗОБРАЖЕНИЕ (Graphic Represent)</label>
-              <div class="image-upload-zone" onclick="document.getElementById('item-img-file-input').click()">
-                <div style="font-size: 2rem;">🖼️</div>
-                <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.4rem;">
-                  Кликнете тук за избор на снимка/лого (PNG, JPG, SVG)
-                </div>
-                <input type="file" id="item-img-file-input" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
-              </div>
-              <div class="preview-container" id="item-preview-container" style="display:none;">
-                <img id="item-preview-img" src="" alt="Preview">
-              </div>
-            </div>
-
-            <!-- BG Registration Section -->
-            <div class="form-section-title">🇧🇬 / 🇪🇺 НАЦИОНАЛНА РЕГИСТРАЦИЯ (BG / EM)</div>
-
-            <div class="form-group">
-              <label for="item-status-select">НАЦИОНАЛЕН СТАТУС *</label>
-              <select class="form-control" id="item-status-select">
-                <option value="registered">🟢 Регистрирана (Зелен)</option>
-                <option value="applied">🟡 Подадена (Жълт)</option>
-                <option value="expired">🔴 Изтекла (Червен)</option>
-                <option value="terminated">🔴 Прекратена (Червен)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="item-territory">ТЕРИТОРИЯ (Territory)</label>
-              <input type="text" class="form-control" id="item-territory" value="BG" placeholder="BG / EM">
-            </div>
-
-            <div class="form-group">
-              <label for="item-app-date">ДАТА НА ПОДАВАНЕ (Application Date)</label>
-              <input type="text" class="form-control" id="item-app-date" placeholder="Напр. 20.06.2003 г.">
-            </div>
-
-            <div class="form-group">
-              <label for="item-reg-date">ДАТА НА РЕГИСТРАЦИЯ (Registration Date)</label>
-              <input type="text" class="form-control" id="item-reg-date" placeholder="Напр. 16.12.2003 г.">
-            </div>
-
-            <div class="form-group full-width">
-              <label for="item-national-link-input">НАЦИОНАЛЕН ЛИНК (BPO / Регистър)</label>
-              <input type="url" class="form-control" id="item-national-link-input" placeholder="https://portal.bpo.bg/bpo-registers/marks/view/BG_N_2003_65417">
-            </div>
-
-            <!-- International Registration Section -->
-            <div class="form-section-title">🌐 МЕЖДУНАРОДНА РЕГИСТРАЦИЯ (INT / WO)</div>
-
-            <div class="form-group">
-              <label for="item-int-status-select">МЕЖДУНАРОДЕН СТАТУС *</label>
-              <select class="form-control" id="item-int-status-select">
-                <option value="registered">🟢 Регистрирана (Зелен)</option>
-                <option value="applied">🟡 Подадена (Жълт)</option>
-                <option value="expired">🔴 Изтекла (Червен)</option>
-                <option value="terminated">🔴 Прекратена (Червен)</option>
-                <option value="none">N / A (Няма регистрация)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="item-int-territory">ТЕРИТОРИЯ (Int Territory)</label>
-              <input type="text" class="form-control" id="item-int-territory" placeholder="WO или N / A">
-            </div>
-
-            <div class="form-group">
-              <label for="item-int-app-date">ДАТА НА ПОДАВАНЕ (Int Application Date)</label>
-              <input type="text" class="form-control" id="item-int-app-date" placeholder="Напр. 16.12.2003 г. или N / A">
-            </div>
-
-            <div class="form-group">
-              <label for="item-int-reg-date">ДАТА НА РЕГИСТРАЦИЯ (Int Registration Date)</label>
-              <input type="text" class="form-control" id="item-int-reg-date" placeholder="Напр. 16.12.2003 г. или N / A">
-            </div>
-
-            <div class="form-group full-width">
-              <label for="item-int-link-input">МЕЖДУНАРОДНИ ЛИНКОВЕ (TMview / EUIPO - разделени със запетая)</label>
-              <input type="text" class="form-control" id="item-int-link-input" placeholder="https://www.tmdn.org/tmview/..., https://euipo.europa.eu/...">
-            </div>
-
-            <!-- Notes Section -->
-            <div class="form-section-title">📝 БЕЛЕЖКИ КЪМ ПРОЕКТА</div>
-
-            <div class="form-group full-width">
-              <label for="item-notes-input">БЕЛЕЖКИ И КОМЕНТАРИ ЗА ПРОЕКТА (Notes)</label>
-              <textarea class="form-control" id="item-notes-input" style="min-height: 100px;" placeholder="Въведете вашите бележки и коментари свързани с марката/дизайна..."></textarea>
-            </div>
-
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeItemModal()">Отказ</button>
-          <button type="submit" class="btn btn-primary">Запази Марка / Дизайн</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modal: Item Detail Lightbox View -->
-  <div class="modal-overlay" id="detail-modal">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h3 class="modal-title">Детайли за Марка / Дизайн</h3>
-        <button class="btn-icon" onclick="closeDetailModal()">✕</button>
-      </div>
-      <div class="modal-body" id="detail-modal-body">
-        <!-- Dynamically rendered -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeDetailModal()">Затвори</button>
-      </div>
-    </div>
-  <!-- Modal: Confirmation Dialog (Delete confirmation with explicit Yes/No options) -->
-  <div class="modal-overlay" id="confirm-modal" onclick="handleBackdropClick(event, 'confirm-modal')">
-    <div class="modal-container" style="max-width: 480px; text-align: center; padding: 2rem;">
-      <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚠️</div>
-      <h3 class="modal-title" id="confirm-modal-title" style="font-size: 1.3rem; margin-bottom: 0.75rem; justify-content: center; color: var(--text-primary);">
-        Потвърждение за изтриване
-      </h3>
-      <p id="confirm-modal-message" style="font-size: 0.925rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.75rem;">
-        Сигурни ли сте, че искате да изтриете този запис?
-      </p>
-      <div style="display: flex; gap: 1rem; justify-content: center;">
-        <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()" style="flex: 1;">
-          <span>✕ Отказ</span>
-        </button>
-        <button type="button" class="btn btn-primary" id="confirm-modal-action-btn" style="flex: 1; background: var(--egt-red); border-color: var(--egt-red);">
-          <span>🗑️ Да, изтрий</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Password Protection / Authentication Overlay -->
-  <div id="auth-overlay" class="auth-overlay">
+  <!-- Screen 1: Password Protection Screen (Active by default until authenticated) -->
+  <div id="auth-overlay" class="auth-overlay" style="display: flex;">
     <div class="auth-card">
       <div class="auth-header">
         <img src="images/egt_logo.png" alt="EGT Logo" class="auth-logo-img">
@@ -323,6 +40,284 @@
       </div>
     </div>
   </div>
+
+  <!-- Screen 2: Main IP Portal Application (Hidden by default until authenticated) -->
+  <div id="app-content" style="display: none;">
+
+    <!-- App Header -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="brand-section">
+          <img src="images/egt_logo.png" alt="EGT Logo" class="egt-logo-img">
+          <div class="brand-title">
+            <h1>
+              Euro Games Technology 
+              <span class="tag-badge">IP PORTAL 1.2</span>
+            </h1>
+            <div class="brand-subtitle">Система за проекти, марки, дизайни & документация</div>
+          </div>
+        </div>
+
+        <div class="stats-pill">
+          <div>Проекти: <strong id="stat-projects-count">0</strong></div>
+          <div style="opacity:0.3">|</div>
+          <div>Марки: <strong id="stat-tm-count">0</strong></div>
+          <div style="opacity:0.3">|</div>
+          <div>Дизайни: <strong id="stat-ds-count">0</strong></div>
+          <div style="opacity:0.3">|</div>
+          <div>Общо: <strong id="stat-total-count">0</strong></div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="openProjectModal()">
+            <span>➕ Нов Проект</span>
+          </button>
+
+          <button class="btn-icon" id="theme-toggle-btn" onclick="toggleTheme()" title="Превключи режим (Тъмен/Светъл)">
+            🌙
+          </button>
+
+          <button class="btn btn-secondary" onclick="logoutApp()" title="Заключи системата (Изход)" id="logout-btn">
+            <span>🔒 Изход</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+
+      <!-- Global Search & Actions Bar -->
+      <section class="controls-section">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-search-input" placeholder="Търсене на проект по име, код, марка, дизайн, бележка или регистър..." oninput="handleSearch(event)">
+        </div>
+      </section>
+
+      <!-- Projects Grid View -->
+      <section class="projects-section">
+        <div class="section-header">
+          <h2>Каталог Проекти, Марки & Дизайни</h2>
+        </div>
+        <div class="projects-grid" id="projects-grid">
+          <!-- Dynamically rendered project cards -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Modal: Add / Edit Project -->
+    <div class="modal-overlay" id="project-modal" onclick="handleBackdropClick(event, 'project-modal')">
+      <div class="modal-container" style="max-width: 600px;">
+        <div class="modal-header">
+          <h3 class="modal-title" id="project-modal-title">Нов Проект</h3>
+          <button class="btn-icon" onclick="closeProjectModal()">✕</button>
+        </div>
+        <form id="project-form" onsubmit="saveProjectForm(event)">
+          <div class="modal-body">
+            <input type="hidden" id="project-id-input">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="project-name-input">Име на проекта *</label>
+              <input type="text" id="project-name-input" class="form-control" required placeholder="напр. GLADIATOR">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="project-code-input">Код на проекта *</label>
+              <input type="text" id="project-code-input" class="form-control" required placeholder="напр. PRJ-GLAD-001">
+            </div>
+            <div class="form-group">
+              <label for="project-desc-input">Описание</label>
+              <textarea id="project-desc-input" class="form-control" placeholder="Кратко описание на проекта..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Отказ</button>
+            <button type="submit" class="btn btn-primary">Запази Проект</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Project Hub Popup Overlay (Opens on Project Card Click) -->
+    <div class="modal-overlay" id="project-hub-modal" onclick="handleBackdropClick(event, 'project-hub-modal')">
+      <div class="modal-container" style="max-width: 1100px; width: 95%;">
+        <div class="modal-header">
+          <div>
+            <span class="project-code" id="hub-modal-project-code">CODE</span>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-top: 2px;" id="hub-modal-project-name">Project Name</h2>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <button class="btn btn-primary" id="hub-modal-add-btn">
+              <span>➕ Добави Марка / Дизайн</span>
+            </button>
+            <button class="btn-icon" onclick="closeProjectHubModal()">✕</button>
+          </div>
+        </div>
+        <div class="modal-body" id="hub-modal-body" style="padding: 1.5rem;">
+          <!-- Project Hub Content dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add / Edit Item (Mark / Design) -->
+    <div class="modal-overlay" id="item-modal" onclick="handleBackdropClick(event, 'item-modal')">
+      <div class="modal-container" style="max-width: 800px;">
+        <div class="modal-header">
+          <h3 class="modal-title" id="item-modal-title">Добави Марка / Дизайн</h3>
+          <button class="btn-icon" onclick="closeItemModal()">✕</button>
+        </div>
+        <form id="item-form" onsubmit="saveItemForm(event)">
+          <div class="modal-body">
+            <input type="hidden" id="item-proj-id-input">
+            <input type="hidden" id="item-id-input">
+            
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="item-name-input">Име на марката / дизайна *</label>
+                <input type="text" id="item-name-input" class="form-control" required placeholder="напр. GLADIATOR">
+              </div>
+
+              <div class="form-group">
+                <label for="item-type-select">Тип *</label>
+                <select id="item-type-select" class="form-control">
+                  <option value="trademark">🏷️ Търговска Марка (TM)</option>
+                  <option value="design">🎨 Промишлен Дизайн (DS)</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label>Графично изображение (Основна снимка & Галерия)</label>
+                <div class="image-upload-zone" onclick="document.getElementById('item-img-file').click()">
+                  <div>📷 Кликнете тук за качване на изображение/снимки</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Поддържа PNG, JPG, WEBP, SVG</div>
+                </div>
+                <input type="file" id="item-img-file" accept="image/*" multiple style="display:none;" onchange="handleImageUpload(event)">
+                <div id="item-preview-container" class="preview-container" style="display:none; margin-top:0.75rem;">
+                  <img id="item-preview-img" src="" alt="Preview">
+                </div>
+              </div>
+
+              <div class="form-section-title">🇧🇬 Национална регистрация (България / BPO)</div>
+
+              <div class="form-group">
+                <label for="item-app-date">Дата на вписване (BG)</label>
+                <input type="text" id="item-app-date" class="form-control" placeholder="напр. 09.04.2003 г.">
+              </div>
+
+              <div class="form-group">
+                <label for="item-reg-date">Дата на регистрация (BG)</label>
+                <input type="text" id="item-reg-date" class="form-control" placeholder="напр. 25.03.2005 г.">
+              </div>
+
+              <div class="form-group">
+                <label for="item-territory">Територия (BG)</label>
+                <input type="text" id="item-territory" class="form-control" value="BG">
+              </div>
+
+              <div class="form-group">
+                <label for="item-status-select">Статус (Национален)</label>
+                <select id="item-status-select" class="form-control">
+                  <option value="registered">🟢 Регистрирана</option>
+                  <option value="applied">🟡 Подадена</option>
+                  <option value="expired">🔴 Изтекла</option>
+                  <option value="terminated">🔴 Прекратена</option>
+                  <option value="none">N / A (Няма)</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="item-national-link-input">🔗 BPO Препратка / Линк към регистъра</label>
+                <input type="url" id="item-national-link-input" class="form-control" placeholder="https://portal.bpo.bg/search...">
+              </div>
+
+              <div class="form-section-title">🌐 Международна регистрация (WIPO / EUIPO)</div>
+
+              <div class="form-group">
+                <label for="item-int-app-date">Дата на международно вписване</label>
+                <input type="text" id="item-int-app-date" class="form-control" placeholder="напр. 02.12.2003 г.">
+              </div>
+
+              <div class="form-group">
+                <label for="item-int-reg-date">Дата на международна регистрация</label>
+                <input type="text" id="item-int-reg-date" class="form-control" placeholder="напр. 02.12.2003 г.">
+              </div>
+
+              <div class="form-group">
+                <label for="item-int-territory">Международна територия</label>
+                <input type="text" id="item-int-territory" class="form-control" placeholder="напр. WO, EU, US">
+              </div>
+
+              <div class="form-group">
+                <label for="item-int-status-select">Статус (Международен)</label>
+                <select id="item-int-status-select" class="form-control">
+                  <option value="none">N / A (Няма)</option>
+                  <option value="registered">🟢 Регистрирана</option>
+                  <option value="applied">🟡 Подадена</option>
+                  <option value="expired">🔴 Изтекла</option>
+                  <option value="terminated">🔴 Прекратена</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="item-int-link-input">🌐 WIPO / EUIPO / TMview Линк(ове)</label>
+                <input type="text" id="item-int-link-input" class="form-control" placeholder="https://www3.wipo.int/madrid/monitor/en/showData.jsp?ID=...">
+              </div>
+
+              <div class="form-section-title">📝 Бележки</div>
+
+              <div class="form-group full-width">
+                <label for="item-notes-input">Бележки / Допълнителна информация</label>
+                <textarea id="item-notes-input" class="form-control" placeholder="Бележки..."></textarea>
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeItemModal()">Отказ</button>
+            <button type="submit" class="btn btn-primary">Запази</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Item Detailed Lightbox View -->
+    <div class="modal-overlay" id="detail-modal" onclick="handleBackdropClick(event, 'detail-modal')">
+      <div class="modal-container" style="max-width: 950px;">
+        <div class="modal-header">
+          <h3 class="modal-title" id="detail-modal-title">Детайли за Марка / Дизайн</h3>
+          <button class="btn-icon" onclick="closeDetailModal()">✕</button>
+        </div>
+        <div class="modal-body" id="detail-modal-body">
+          <!-- Dynamic detail view -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeDetailModal()">Затвори</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Confirmation Dialog (Delete confirmation with explicit Yes/No options) -->
+    <div class="modal-overlay" id="confirm-modal" onclick="handleBackdropClick(event, 'confirm-modal')">
+      <div class="modal-container" style="max-width: 480px; text-align: center; padding: 2rem;">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚠️</div>
+        <h3 class="modal-title" id="confirm-modal-title" style="font-size: 1.3rem; margin-bottom: 0.75rem; justify-content: center; color: var(--text-primary);">
+          Потвърждение за изтриване
+        </h3>
+        <p id="confirm-modal-message" style="font-size: 0.925rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.75rem;">
+          Сигурни ли сте, че искате да изтриете този запис?
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button type="button" class="btn btn-secondary" onclick="closeConfirmModal()" style="flex: 1;">
+            <span>✕ Отказ</span>
+          </button>
+          <button type="button" class="btn btn-primary" id="confirm-modal-action-btn" style="flex: 1; background: var(--egt-red); border-color: var(--egt-red);">
+            <span>🗑️ Да, изтрий</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- End #app-content (Screen 2) -->
 
   <!-- JavaScript Scripts -->
   <script src="data.js"></script>

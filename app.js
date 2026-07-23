@@ -11,14 +11,19 @@ let state = {
   theme: 'dark'
 };
 
-// Initialize App
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize App (Fail-safe initialization regardless of document loading state)
+function initApp() {
   checkAuth();
   loadState();
   initTheme();
   initAutoSave();
-  renderApp();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // Helper function to format status badge (4 explicit statuses supported)
 function getStatusBadge(statusKey) {
@@ -884,18 +889,17 @@ const APP_REQUIRED_PASSWORD = 'Jackpot123#@!';
 function checkAuth() {
   const isAuth = sessionStorage.getItem('egt_authenticated') === 'true';
   const overlay = document.getElementById('auth-overlay');
-  const logoutBtn = document.getElementById('logout-btn');
+  const appContent = document.getElementById('app-content');
 
   if (isAuth) {
-    // Authenticated: hide overlay and unlock content
+    // Authenticated: Hide Screen 1 (Password Overlay), Show Screen 2 (Main App Content)
     if (overlay) overlay.style.display = 'none';
-    if (logoutBtn) logoutBtn.style.display = 'inline-flex';
-    document.body.classList.remove('auth-locked');
+    if (appContent) appContent.style.display = 'block';
+    renderApp();
   } else {
-    // Not authenticated: show overlay and lock content
+    // Unauthenticated: Show Screen 1 (Password Overlay), Hide Screen 2 (Main App Content)
     if (overlay) overlay.style.display = 'flex';
-    if (logoutBtn) logoutBtn.style.display = 'none';
-    document.body.classList.add('auth-locked');
+    if (appContent) appContent.style.display = 'none';
     setTimeout(() => {
       const pwInput = document.getElementById('auth-password-input');
       if (pwInput) pwInput.focus();
