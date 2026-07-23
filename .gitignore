@@ -1,0 +1,9 @@
+# Logs and temporary files
+*.log
+*.tmp
+*.file
+test_download*
+
+# OS metadata
+.DS_Store
+Thumbs.db
