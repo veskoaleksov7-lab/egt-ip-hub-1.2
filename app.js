@@ -8,7 +8,8 @@ let state = {
   activeFilterType: 'all',
   activeTerritory: 'all',
   searchQuery: '',
-  theme: 'dark'
+  theme: 'dark',
+  viewMode: localStorage.getItem('egt_view_mode') || 'grid'
 };
 
 // Initialize App (Fail-safe initialization order: load data FIRST, then check auth & render)
@@ -23,6 +24,12 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initApp);
 } else {
   initApp();
+}
+
+function setViewMode(mode) {
+  state.viewMode = mode;
+  localStorage.setItem('egt_view_mode', mode);
+  renderProjectsList();
 }
 
 // Helper function to format status badge (4 explicit statuses supported)
@@ -206,12 +213,19 @@ function clearSearch() {
   renderApp();
 }
 
-// Projects View
+// Projects View (Supports both Gallery View and List Table View)
 function renderProjectsList() {
   const container = document.getElementById('projects-grid');
   if (!container) return;
 
   const query = state.searchQuery.toLowerCase().trim();
+  const mode = state.viewMode || 'grid';
+
+  // Toggle active button states
+  const gridBtn = document.getElementById('view-grid-btn');
+  const listBtn = document.getElementById('view-list-btn');
+  if (gridBtn) gridBtn.classList.toggle('active', mode === 'grid');
+  if (listBtn) listBtn.classList.toggle('active', mode === 'list');
 
   // Variant A: Strict filtering by Project Name and Code ONLY
   const filteredProjects = state.projects.filter(proj => {
@@ -222,6 +236,7 @@ function renderProjectsList() {
   });
 
   if (filteredProjects.length === 0) {
+    container.className = 'projects-grid';
     container.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">
         <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
@@ -232,47 +247,121 @@ function renderProjectsList() {
     return;
   }
 
-  container.innerHTML = filteredProjects.map(proj => {
-    const tmCount = (proj.items || []).filter(i => i.type === 'trademark').length;
-    const dsCount = (proj.items || []).filter(i => i.type === 'design').length;
-    const isSelected = state.selectedProjectId === proj.id;
+  if (mode === 'grid') {
+    // Gallery View (Grid)
+    container.className = 'projects-grid';
+    container.innerHTML = filteredProjects.map(proj => {
+      const tmCount = (proj.items || []).filter(i => i.type === 'trademark').length;
+      const dsCount = (proj.items || []).filter(i => i.type === 'design').length;
+      const isSelected = state.selectedProjectId === proj.id;
 
-    // Fast image preview for project card if available
-    const firstImgItem = (proj.items || []).find(i => i.image);
-    const cardImgHtml = firstImgItem ? 
-      `<div style="height: 140px; margin:-1.5rem -1.5rem 1rem -1.5rem; overflow:hidden; background:#000; border-bottom:1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">
-        <img src="${firstImgItem.image}" alt="${escapeHtml(proj.name)}" style="max-width:100%; max-height:100%; object-fit:contain;">
-       </div>` : '';
+      // Fast image preview for project card if available
+      const firstImgItem = (proj.items || []).find(i => i.image);
+      const cardImgHtml = firstImgItem ? 
+        `<div style="height: 140px; margin:-1.5rem -1.5rem 1rem -1.5rem; overflow:hidden; background:#000; border-bottom:1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">
+          <img src="${firstImgItem.image}" alt="${escapeHtml(proj.name)}" style="max-width:100%; max-height:100%; object-fit:contain;">
+         </div>` : '';
 
-    return `
-      <div class="project-card ${isSelected ? 'selected' : ''}" onclick="selectProject('${proj.id}')" title="Кликнете за преглед на марките и дизайните на проект ${escapeHtml(proj.name)}">
-        ${cardImgHtml}
-        <div class="project-card-header">
-          <div>
-            <div class="project-code">${escapeHtml(proj.code)}</div>
-            <div class="project-name">${escapeHtml(proj.name)}</div>
+      return `
+        <div class="project-card ${isSelected ? 'selected' : ''}" onclick="selectProject('${proj.id}')" title="Кликнете за преглед на марките и дизайните на проект ${escapeHtml(proj.name)}">
+          ${cardImgHtml}
+          <div class="project-card-header">
+            <div>
+              <div class="project-code">${escapeHtml(proj.code)}</div>
+              <div class="project-name">${escapeHtml(proj.name)}</div>
+            </div>
+            <div style="display: flex; gap: 4px;">
+              <button class="btn-icon" onclick="event.stopPropagation(); openProjectModal('${proj.id}')" title="Редактирай проект">✏️</button>
+              <button class="btn-danger btn-icon" onclick="event.stopPropagation(); deleteProject('${proj.id}')" title="Изтрий проект">🗑️</button>
+            </div>
           </div>
-          <div style="display: flex; gap: 4px;">
-            <button class="btn-icon" onclick="event.stopPropagation(); openProjectModal('${proj.id}')" title="Редактирай проект">✏️</button>
-            <button class="btn-danger btn-icon" onclick="event.stopPropagation(); deleteProject('${proj.id}')" title="Изтрий проект">🗑️</button>
+
+          <div class="project-desc">${escapeHtml(proj.description || 'Няма допълнително описание.')}</div>
+
+          <div class="project-badges" style="margin-bottom: 0;">
+            <div class="badge-item tm">
+              <span>🏷️ Марки:</span>
+              <strong>${tmCount}</strong>
+            </div>
+            <div class="badge-item ds">
+              <span>🎨 Дизайни:</span>
+              <strong>${dsCount}</strong>
+            </div>
           </div>
         </div>
+      `;
+    }).join('');
 
-        <div class="project-desc">${escapeHtml(proj.description || 'Няма допълнително описание.')}</div>
+  } else {
+    // List Table View (Matches Official Registers Table)
+    container.className = 'projects-table-wrapper';
+    
+    let tableRowsHtml = '';
+    filteredProjects.forEach(proj => {
+      const items = proj.items && proj.items.length > 0 ? proj.items : [{
+        id: proj.id + '-main',
+        name: proj.name,
+        type: 'trademark',
+        status: 'registered',
+        territory: 'BG',
+        appDate: proj.createdDate || 'N/A',
+        regDate: proj.createdDate || 'N/A',
+        image: null
+      }];
 
-        <div class="project-badges" style="margin-bottom: 0;">
-          <div class="badge-item tm">
-            <span>🏷️ Марки:</span>
-            <strong>${tmCount}</strong>
-          </div>
-          <div class="badge-item ds">
-            <span>🎨 Дизайни:</span>
-            <strong>${dsCount}</strong>
-          </div>
-        </div>
-      </div>
+      items.forEach(item => {
+        const thumbHtml = item.image ?
+          `<img src="${item.image}" alt="${escapeHtml(item.name)}" class="table-thumb-img">` :
+          `<div class="table-thumb-placeholder">N/A</div>`;
+
+        const territoryBadge = `<span class="territory-pill">${escapeHtml(item.territory || item.intTerritory || 'BG')}</span>`;
+        const statusBadge = getStatusBadge(item.status || item.intStatus);
+        const applicantName = item.applicant || 'ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД';
+        const registerOffice = (item.territory === 'BG' ? 'Bulgaria (BPO)' : (item.intTerritory === 'WO' ? 'WIPO (Madrid)' : 'EUIPO'));
+
+        tableRowsHtml += `
+          <tr onclick="selectProject('${proj.id}')" title="Кликнете за преглед на детайлите на проект ${escapeHtml(proj.name)}">
+            <td style="width: 70px; text-align: center;">${thumbHtml}</td>
+            <td>
+              <strong style="color: var(--text-primary); font-size: 0.95rem;">${escapeHtml(item.name)}</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(proj.code)} (${escapeHtml(proj.name)})</div>
+            </td>
+            <td>${territoryBadge}</td>
+            <td>${escapeHtml(item.appDate || 'N/A')}</td>
+            <td>${statusBadge}</td>
+            <td style="font-size: 0.8rem; color: var(--text-secondary);">${escapeHtml(registerOffice)}</td>
+            <td style="font-size: 0.8rem; color: var(--text-secondary);">${escapeHtml(applicantName)}</td>
+            <td>${escapeHtml(item.regDate || 'N/A')}</td>
+            <td style="text-align: right;" onclick="event.stopPropagation();">
+              <button class="btn-icon" onclick="openProjectModal('${proj.id}')" title="Редактирай проект">✏️</button>
+              <button class="btn-danger btn-icon" onclick="deleteProject('${proj.id}')" title="Изтрий проект">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    container.innerHTML = `
+      <table class="projects-table">
+        <thead>
+          <tr>
+            <th style="width: 70px; text-align: center;">Изображение</th>
+            <th>Проект / Марка</th>
+            <th>Територия</th>
+            <th>Дата вписване</th>
+            <th>Статус</th>
+            <th>Регистър / Офис</th>
+            <th>Заявител</th>
+            <th>Дата регистрация</th>
+            <th style="text-align: right;">Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRowsHtml}
+        </tbody>
+      </table>
     `;
-  }).join('');
+  }
 }
 
 function selectProject(projId) {
