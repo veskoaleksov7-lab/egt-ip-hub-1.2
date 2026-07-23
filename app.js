@@ -49,43 +49,51 @@ function loadState() {
   if (savedData) {
     try {
       const parsed = JSON.parse(savedData);
-      
-      // Auto-merge missing initial projects & update item fields if present in seed
-      INITIAL_PROJECTS.forEach(initProj => {
-        const existing = parsed.find(p => p.id === initProj.id);
-        if (!existing) {
-          parsed.push(initProj);
-        } else {
-          // Update item properties from seed data if missing or updated
-          initProj.items.forEach(initItem => {
-            const existingItem = (existing.items || []).find(i => i.id === initItem.id);
-            if (!existingItem) {
-              if (!existing.items) existing.items = [];
-              existing.items.push(initItem);
-            } else {
-              if (initItem.image) existingItem.image = initItem.image;
-              if (initItem.gallery && initItem.gallery.length > 0) existingItem.gallery = initItem.gallery;
-              if (initItem.nationalLink) existingItem.nationalLink = initItem.nationalLink;
-              if (initItem.intLink) existingItem.intLink = initItem.intLink;
-              if (initItem.intLinks && initItem.intLinks.length > 0) existingItem.intLinks = initItem.intLinks;
-              if (initItem.link) existingItem.link = initItem.link;
-              if (initItem.status) existingItem.status = initItem.status;
-              if (initItem.intStatus) existingItem.intStatus = initItem.intStatus;
-              if (initItem.intTerritory) existingItem.intTerritory = initItem.intTerritory;
-              if (initItem.notes) existingItem.notes = initItem.notes;
-            }
-          });
-        }
-      });
-      state.projects = parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Auto-merge missing initial projects & update item fields if present in seed
+        INITIAL_PROJECTS.forEach(initProj => {
+          const existing = parsed.find(p => p.id === initProj.id);
+          if (!existing) {
+            parsed.push(initProj);
+          } else {
+            // Update item properties from seed data if missing or updated
+            (initProj.items || []).forEach(initItem => {
+              const existingItem = (existing.items || []).find(i => i.id === initItem.id);
+              if (!existingItem) {
+                if (!existing.items) existing.items = [];
+                existing.items.push(initItem);
+              } else {
+                if (initItem.image) existingItem.image = initItem.image;
+                if (initItem.gallery && initItem.gallery.length > 0) existingItem.gallery = initItem.gallery;
+                if (initItem.nationalLink) existingItem.nationalLink = initItem.nationalLink;
+                if (initItem.intLink) existingItem.intLink = initItem.intLink;
+                if (initItem.intLinks && initItem.intLinks.length > 0) existingItem.intLinks = initItem.intLinks;
+                if (initItem.link) existingItem.link = initItem.link;
+                if (initItem.status) existingItem.status = initItem.status;
+                if (initItem.intStatus) existingItem.intStatus = initItem.intStatus;
+                if (initItem.intTerritory) existingItem.intTerritory = initItem.intTerritory;
+                if (initItem.notes) existingItem.notes = initItem.notes;
+              }
+            });
+          }
+        });
+        state.projects = parsed;
+      } else {
+        state.projects = JSON.parse(JSON.stringify(INITIAL_PROJECTS));
+      }
     } catch (e) {
       console.error('Error parsing localStorage data, resetting to seed data.', e);
-      state.projects = INITIAL_PROJECTS;
+      state.projects = JSON.parse(JSON.stringify(INITIAL_PROJECTS));
     }
   } else {
-    state.projects = INITIAL_PROJECTS;
-    saveState();
+    state.projects = JSON.parse(JSON.stringify(INITIAL_PROJECTS));
   }
+
+  if (!state.projects || state.projects.length === 0) {
+    state.projects = JSON.parse(JSON.stringify(INITIAL_PROJECTS));
+  }
+
+  saveState();
 }
 
 function saveState() {
