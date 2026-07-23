@@ -993,3 +993,168 @@ body.auth-locked .main-container {
 .auth-card.shake {
   animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
+
+/* ==========================================
+   Comprehensive Mobile & Tablet Responsiveness
+   ========================================== */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .main-container {
+    padding: 1rem;
+  }
+
+  /* App Header Mobile */
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .header-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .brand-section {
+    gap: 0.75rem;
+  }
+
+  .egt-logo-img {
+    height: 38px;
+  }
+
+  .brand-title h1 {
+    font-size: 1.1rem;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .brand-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .stats-pill {
+    width: 100%;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    overflow-x: auto;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .header-actions .btn {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.85rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* Search & Controls */
+  .controls-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .search-box input {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+  }
+
+  /* Projects Grid */
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .project-card {
+    padding: 1.15rem;
+  }
+
+  .project-name {
+    font-size: 1.1rem;
+  }
+
+  /* Modals on Mobile */
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-container {
+    max-height: 94vh;
+    border-radius: var(--radius-lg);
+    width: 100% !important;
+  }
+
+  .modal-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .modal-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.25rem;
+  }
+
+  /* Tables inside Modals */
+  .items-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .items-table th, .items-table td {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* Password Screen 1 Mobile */
+  .auth-overlay {
+    padding: 1rem;
+  }
+
+  .auth-card {
+    padding: 2rem 1.25rem;
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+  }
+
+  .auth-logo-img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .auth-header h2 {
+    font-size: 1.15rem;
+  }
+
+  .auth-badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+  }
+
+  .password-wrapper input {
+    font-size: 0.95rem;
+    padding: 0.75rem 2.5rem 0.75rem 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-title h1 {
+    font-size: 1rem;
+  }
+  .tag-badge {
+    font-size: 0.65rem;
+    padding: 1px 6px;
+  }
+  .badge-item {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+  }
+}
