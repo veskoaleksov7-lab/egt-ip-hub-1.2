@@ -91,7 +91,8 @@
       <section class="controls-section">
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" id="global-search-input" placeholder="Търсене на проект по име, код, марка, дизайн, бележка или регистър..." oninput="handleSearch(event)">
+          <input type="text" id="global-search-input" placeholder="Търсене на проект по име или код (напр. GLADIATOR, INCA GOLD)..." oninput="handleSearch(event)">
+          <button type="button" id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()" style="display: none;" title="Изчисти търсенето">✕</button>
         </div>
       </section>
 

@@ -167,16 +167,43 @@ function updateStats() {
     });
   });
 
-  document.getElementById('stat-projects-count').textContent = totalProjects;
+  const query = state.searchQuery ? state.searchQuery.toLowerCase().trim() : '';
+  let visibleCount = totalProjects;
+  if (query) {
+    visibleCount = state.projects.filter(proj => {
+      const nameMatch = (proj.name || '').toLowerCase().includes(query);
+      const codeMatch = (proj.code || '').toLowerCase().includes(query);
+      return nameMatch || codeMatch;
+    }).length;
+  }
+
+  const projStatEl = document.getElementById('stat-projects-count');
+  if (projStatEl) {
+    projStatEl.textContent = query ? `${visibleCount} (от ${totalProjects})` : totalProjects;
+  }
+
   document.getElementById('stat-tm-count').textContent = totalTM;
   document.getElementById('stat-ds-count').textContent = totalDS;
   document.getElementById('stat-total-count').textContent = totalTM + totalDS;
 }
 
-// Search Input Handler
+// Search Handlers & Variant A Strict Filtering (By Project Name & Code)
 function handleSearch(e) {
   state.searchQuery = e && e.target ? e.target.value : (e || '');
-  renderProjectsList();
+  const clearBtn = document.getElementById('clear-search-btn');
+  if (clearBtn) {
+    clearBtn.style.display = state.searchQuery.trim() ? 'flex' : 'none';
+  }
+  renderApp();
+}
+
+function clearSearch() {
+  state.searchQuery = '';
+  const searchInput = document.getElementById('global-search-input');
+  const clearBtn = document.getElementById('clear-search-btn');
+  if (searchInput) searchInput.value = '';
+  if (clearBtn) clearBtn.style.display = 'none';
+  renderApp();
 }
 
 // Projects View
@@ -186,34 +213,12 @@ function renderProjectsList() {
 
   const query = state.searchQuery.toLowerCase().trim();
 
+  // Variant A: Strict filtering by Project Name and Code ONLY
   const filteredProjects = state.projects.filter(proj => {
     if (!query) return true;
-
-    const matchesName = proj.name.toLowerCase().includes(query) || 
-                        proj.code.toLowerCase().includes(query) ||
-                        (proj.description && proj.description.toLowerCase().includes(query));
-
-    const matchesItem = (proj.items || []).some(item => {
-      const fullText = (
-        (item.name || "") + " " + 
-        (item.territory || "") + " " + 
-        (item.intTerritory || "") + " " + 
-        (item.appDate || "") + " " + 
-        (item.regDate || "") + " " + 
-        (item.intAppDate || "") + " " + 
-        (item.intRegDate || "") + " " + 
-        (item.status || "") + " " + 
-        (item.intStatus || "") + " " + 
-        (item.notes || "") + " " + 
-        (item.nationalLink || "") + " " + 
-        (item.intLink || "") + " " + 
-        (item.link || "")
-      ).toLowerCase();
-      
-      return fullText.includes(query);
-    });
-
-    return matchesName || matchesItem;
+    const nameMatch = (proj.name || '').toLowerCase().includes(query);
+    const codeMatch = (proj.code || '').toLowerCase().includes(query);
+    return nameMatch || codeMatch;
   });
 
   if (filteredProjects.length === 0) {
