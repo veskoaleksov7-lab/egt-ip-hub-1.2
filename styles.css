@@ -824,38 +824,46 @@ body.auth-locked .main-container {
   user-select: none;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .auth-overlay {
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.96);
+  background: #090a0d !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
+  z-index: 999999 !important;
   padding: 1.5rem;
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.25s ease-out;
 }
 
 [data-theme="light"] .auth-overlay {
-  background: rgba(0, 0, 0, 0.92);
+  background: #090a0d !important;
 }
 
 .auth-card {
-  background: #252d45;
-  border: 3px solid #e42314;
+  background: #141722;
+  border: 2px solid var(--egt-red);
   border-radius: var(--radius-xl);
-  box-shadow: 0 0 0 1px rgba(228, 35, 20, 0.2), 0 0 60px rgba(228, 35, 20, 0.5), 0 24px 64px rgba(0, 0, 0, 0.95);
+  box-shadow: 0 0 40px rgba(228, 35, 20, 0.4), 0 20px 60px rgba(0, 0, 0, 0.95);
   width: 100%;
-  max-width: 460px;
+  max-width: 440px;
   padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   position: relative;
+  z-index: 1000000;
 }
 
 .auth-header {
