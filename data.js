@@ -764,7 +764,7 @@ const INITIAL_PROJECTS = [
     id: "proj-12",
     name: "RISE OF RA",
     code: "PRJ-RRA-012",
-    description: "Обединен проект съдържащ търговски марки RISE OF RA (БГ 2006, БГ 2019 с китайски йероглифи, Международна 2016 и Международна 2020).",
+    description: "Обединен проект съдържащ търговски марки RISE OF RA и 5 промишлени дизайна (Основен, VLT Италия, AWP Испания, AWP Нидерландия, Чешки пазар).",
     createdDate: "2006-11-22",
     items: [
       {
@@ -826,6 +826,156 @@ const INITIAL_PROJECTS = [
         
         notes: "Търговска марка RISE OF RA с китайски йероглифи (太陽神的崛起 RISE OF RA). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД. Вписване BG: Заявка № 157240 | Рег. № 157240. Международна регистрация № 1551611 (WIPO / TMview).",
         link: "https://portal.bpo.bg/bpo-registers/marks/view/BG_N_2019_157240",
+        files: []
+      },
+      {
+        id: "item-rra-ds1",
+        name: "Rise of Ra (Основен дизайн)",
+        type: "design",
+        status: "registered",
+        intStatus: "registered",
+        image: "images/rise_of_ra_ds_main.jpg",
+        gallery: [
+          "images/rise_of_ra_ds_main.jpg"
+        ],
+        
+        // Регистрация на дизайн (EM / EUIPO)
+        appDate: "18.12.2015 г.",
+        regDate: "18.12.2015 г.",
+        territory: "EM",
+        nationalLink: "https://euipo.europa.eu/eSearch/#details/designs/002914820-0033",
+        
+        // Международни данни (EUIPO)
+        intAppDate: "18.12.2015 г.",
+        intRegDate: "18.12.2015 г.",
+        intTerritory: "EM (EU)",
+        intLink: "https://euipo.europa.eu/eSearch/#details/designs/002914820-0033",
+        intLinks: [
+          "https://euipo.europa.eu/eSearch/#details/designs/002914820-0033"
+        ],
+        
+        notes: "Основен промишлен дизайн за слот игра Rise of Ra. Регистриран в EUIPO (Дизайн № 002914820-0033). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД.",
+        link: "https://euipo.europa.eu/eSearch/#details/designs/002914820-0033",
+        files: []
+      },
+      {
+        id: "item-rra-ds2",
+        name: "Rise of Ra VLT ITALY",
+        type: "design",
+        status: "registered",
+        intStatus: "registered",
+        image: "images/rise_of_ra_ds_italy.jpg",
+        gallery: [
+          "images/rise_of_ra_ds_italy.jpg"
+        ],
+        
+        // Регистрация на дизайн (EM / EUIPO)
+        appDate: "05.02.2018 г.",
+        regDate: "05.02.2018 г.",
+        territory: "EM",
+        nationalLink: "https://euipo.europa.eu/eSearch/#details/designs/004695260-0063",
+        
+        // Международни данни (EUIPO)
+        intAppDate: "05.02.2018 г.",
+        intRegDate: "05.02.2018 г.",
+        intTerritory: "EM (IT)",
+        intLink: "https://euipo.europa.eu/eSearch/#details/designs/004695260-0063",
+        intLinks: [
+          "https://euipo.europa.eu/eSearch/#details/designs/004695260-0063"
+        ],
+        
+        notes: "Промишлен дизайн за слот игра Rise of Ra VLT Италия. Регистриран в EUIPO (Дизайн № 004695260-0063). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД.",
+        link: "https://euipo.europa.eu/eSearch/#details/designs/004695260-0063",
+        files: []
+      },
+      {
+        id: "item-rra-ds3",
+        name: "Rise of Ra AWP SPAIN",
+        type: "design",
+        status: "registered",
+        intStatus: "registered",
+        image: "images/rise_of_ra_ds_spain.jpg",
+        gallery: [
+          "images/rise_of_ra_ds_spain.jpg"
+        ],
+        
+        // Регистрация на дизайн (EM / EUIPO)
+        appDate: "31.01.2019 г.",
+        regDate: "31.01.2019 г.",
+        territory: "EM",
+        nationalLink: "https://euipo.europa.eu/eSearch/#details/designs/006135125-0055",
+        
+        // Международни данни (EUIPO)
+        intAppDate: "31.01.2019 г.",
+        intRegDate: "31.01.2019 г.",
+        intTerritory: "EM (ES)",
+        intLink: "https://euipo.europa.eu/eSearch/#details/designs/006135125-0055",
+        intLinks: [
+          "https://euipo.europa.eu/eSearch/#details/designs/006135125-0055"
+        ],
+        
+        notes: "Промишлен дизайн за слот игра Rise of Ra AWP Испания (Paytable & правила). Регистриран в EUIPO (Дизайн № 006135125-0055). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД.",
+        link: "https://euipo.europa.eu/eSearch/#details/designs/006135125-0055",
+        files: []
+      },
+      {
+        id: "item-rra-ds4",
+        name: "Rise of RA AWP NETHERLANDS",
+        type: "design",
+        status: "registered",
+        intStatus: "registered",
+        image: "images/rise_of_ra_ds_netherlands.jpg",
+        gallery: [
+          "images/rise_of_ra_ds_netherlands.jpg"
+        ],
+        
+        // Регистрация на дизайн (EM / EUIPO)
+        appDate: "31.01.2019 г.",
+        regDate: "31.01.2019 г.",
+        territory: "EM",
+        nationalLink: "https://euipo.europa.eu/eSearch/#details/designs/006135125-0073",
+        
+        // Международни данни (EUIPO)
+        intAppDate: "31.01.2019 г.",
+        intRegDate: "31.01.2019 г.",
+        intTerritory: "EM (NL)",
+        intLink: "https://euipo.europa.eu/eSearch/#details/designs/006135125-0073",
+        intLinks: [
+          "https://euipo.europa.eu/eSearch/#details/designs/006135125-0073"
+        ],
+        
+        notes: "Промишлен дизайн за слот игра Rise of RA AWP Нидерландия. Регистриран в EUIPO (Дизайн № 006135125-0073). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД.",
+        link: "https://euipo.europa.eu/eSearch/#details/designs/006135125-0073",
+        files: []
+      },
+      {
+        id: "item-rra-ds5",
+        name: "Rise of Ra Czech Market",
+        type: "design",
+        status: "registered",
+        intStatus: "registered",
+        image: "images/rise_of_ra_ds_czech.jpg",
+        gallery: [
+          "images/rise_of_ra_ds_czech.jpg"
+        ],
+        
+        // Регистрация на дизайн (EM / EUIPO)
+        appDate: "12.01.2021 г.",
+        regDate: "12.01.2021 г.",
+        territory: "EM",
+        nationalLink: "https://euipo.europa.eu/eSearch/#details/designs/008399430-0070",
+        
+        // Международни данни (EUIPO)
+        intAppDate: "12.01.2021 г.",
+        intRegDate: "12.01.2021 г.",
+        intTerritory: "EM (CZ)",
+        intLink: "https://euipo.europa.eu/eSearch/#details/designs/008399430-0070",
+        intLinks: [
+          "https://euipo.europa.eu/eSearch/#details/designs/008399430-0070"
+        ],
+        
+        notes: "Промишлен дизайн за слот игра Rise of Ra Чешки пазар (Czech Market). Регистриран в EUIPO (Дизайн № 008399430-0070). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД.",
+        link: "https://euipo.europa.eu/eSearch/#details/designs/008399430-0070",
         files: []
       }
     ]
