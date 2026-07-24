@@ -759,9 +759,80 @@ const INITIAL_PROJECTS = [
         files: []
       }
     ]
+  },
+  {
+    id: "proj-12",
+    name: "RISE OF RA",
+    code: "PRJ-RRA-012",
+    description: "Обединен проект съдържащ търговски марки RISE OF RA (БГ 2006, БГ 2019 с китайски йероглифи, Международна 2016 и Международна 2020).",
+    createdDate: "2006-11-22",
+    items: [
+      {
+        id: "item-rra-tm2006",
+        name: "RISE OF RA (2006)",
+        type: "trademark",
+        status: "registered",
+        intStatus: "registered",
+        image: "images/rise_of_ra_tm_logo.png",
+        gallery: [
+          "images/rise_of_ra_tm_logo.png",
+          "images/rise_of_ra_banner.png"
+        ],
+        
+        // Национална регистрация (BG)
+        appDate: "22.11.2006 г.",
+        regDate: "05.08.2008 г.",
+        territory: "BG",
+        nationalLink: "https://portal.bpo.bg/bpo-registers/marks/view/BG_N_2006_91475",
+        
+        // Международна регистрация (WO)
+        intAppDate: "19.10.2016 г.",
+        intRegDate: "19.10.2016 г.",
+        intTerritory: "WO",
+        intLink: "https://www.tmdn.org/tmview/#/tmview/detail/WO500000001356049",
+        intLinks: [
+          "https://www.tmdn.org/tmview/#/tmview/detail/WO500000001356049"
+        ],
+        
+        notes: "Класическа търговска марка RISE OF RA (2006 г.). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД. Вписване BG: Заявка № 91475 | Рег. № 66329. Международна регистрация № 1356049 (WIPO / TMview).",
+        link: "https://portal.bpo.bg/bpo-registers/marks/view/BG_N_2006_91475",
+        files: []
+      },
+      {
+        id: "item-rra-tm2019",
+        name: "RISE OF RA (2019 / 2020)",
+        type: "trademark",
+        status: "registered",
+        intStatus: "registered",
+        image: "images/rise_of_ra_cn_logo.png",
+        gallery: [
+          "images/rise_of_ra_cn_logo.png"
+        ],
+        
+        // Национална регистрация (BG)
+        appDate: "04.12.2019 г.",
+        regDate: "02.06.2020 г.",
+        territory: "BG",
+        nationalLink: "https://portal.bpo.bg/bpo-registers/marks/view/BG_N_2019_157240",
+        
+        // Международна регистрация (WO)
+        intAppDate: "02.06.2020 г.",
+        intRegDate: "02.06.2020 г.",
+        intTerritory: "WO",
+        intLink: "https://www.tmdn.org/tmview/#/tmview/detail/WO500000001551611",
+        intLinks: [
+          "https://www.tmdn.org/tmview/#/tmview/detail/WO500000001551611"
+        ],
+        
+        notes: "Търговска марка RISE OF RA с китайски йероглифи (太陽神的崛起 RISE OF RA). Собственик: ЕВРО ГЕЙМС ТЕХНОЛОДЖИ ООД. Вписване BG: Заявка № 157240 | Рег. № 157240. Международна регистрация № 1551611 (WIPO / TMview).",
+        link: "https://portal.bpo.bg/bpo-registers/marks/view/BG_N_2019_157240",
+        files: []
+      }
+    ]
   }
 ];
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { INITIAL_PROJECTS };
 }
+
